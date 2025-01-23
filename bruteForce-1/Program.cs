@@ -11,15 +11,6 @@ Random rnd = new Random();
 List<string> passwordsList = passwordsFile.OrderBy(x => rnd.Next()).Take(100).ToList();
 
 
-// TEST: Mostrar la lista random que ha elegido
-foreach (string test in passwordsList)
-{
-    Console.Write($"{test}, ");
-}
-
-Console.WriteLine();
-Console.WriteLine();
-
 // Password random de la lista
 string randomPassword = passwordsList[rnd.Next(passwordsList.Count)];
 Console.WriteLine($"Password random: {randomPassword}");
@@ -29,19 +20,37 @@ string hashedPassword = HashPass(randomPassword);
 Console.WriteLine($"Hashed password: {hashedPassword}");
 
 
-foreach (string password in passwordsList)
-{
-    string checkHash = HashPass(password);
 
-    if (checkHash == hashedPassword)
+Thread hilo1 = new Thread(() => CheckPassword(passwordsList.Take(50).ToList(), hashedPassword));
+Thread hilo2 = new Thread(() => CheckPassword(passwordsList.Skip(50).ToList(), hashedPassword));
+
+
+hilo1.Start();
+hilo2.Start();
+
+
+
+static void CheckPassword(List<string> passwords, string realPasswordHash)
+{
+    foreach (var (pass, index) in passwords.Select((password, idx) => (password, idx)))
     {
-        Console.WriteLine($"Contraseña encontrada: {password}");
-        Console.WriteLine($"Hash encontrado: {checkHash}");
+        string passwordToCheckHashed = HashPass(pass);
+        
+        Console.WriteLine($"Hilo {Thread.CurrentThread.ManagedThreadId} procesando: {pass} . {index}");
+
+        if (passwordToCheckHashed == realPasswordHash)
+        {
+            Console.WriteLine($"Password found: {pass} por el hilo {Thread.CurrentThread.ManagedThreadId} en el indice {index}");
+        }
     }
+
+
+    //return "counter.ToString()";
+
 }
 
 
-// Hashear string a sha256  
+    
 static string HashPass(string password)
 {
     using (SHA256 sha256Hash = SHA256.Create())
@@ -49,6 +58,11 @@ static string HashPass(string password)
         byte[] bytes = Encoding.UTF8.GetBytes(password);
         byte[] hash = sha256Hash.ComputeHash(bytes);
         return Convert.ToBase64String(hash);
-        
     }
 }
+
+
+
+    
+
+
