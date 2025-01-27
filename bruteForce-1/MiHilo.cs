@@ -31,10 +31,13 @@ public class MiHilo
 
     void _process()
     {
+        
+        Console.WriteLine($"Number of passwords to check in thread ${text}: {passwords.Count}");
+        
         foreach (var (pass, index) in passwords.Select((password, idx) => (password, idx)))
         {
 
-            if (cancellationTokenSource.IsCancellationRequested)
+            if (token.IsCancellationRequested)
             {
                 finalizar.Value.Invoke();
                 return;
@@ -49,6 +52,7 @@ public class MiHilo
                 Console.WriteLine($"Password found: {pass} por el hilo {text} en el indice {index}");
                 //finalizar.Value.Invoke();
                 cancellationTokenSource.Cancel();
+                
                 break;
             }
         }
