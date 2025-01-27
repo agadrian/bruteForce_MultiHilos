@@ -1,8 +1,5 @@
 ﻿namespace bruteForce_1;
 
-using System.Security.Cryptography;
-using System.Text;
-
 public class Program
 {
     public static void Main(string[] args)
@@ -28,24 +25,18 @@ public class Program
         CancellationToken token = cancellationTokenSource.Token;
         
         Wrapper<Action> finalizar = new Wrapper<Action>(() => { });
-
-
-        List<String> lista1 = passwordsList.GetRange(0,50);
+        
         
         
         MiHilo hilo1 = new MiHilo("1", finalizar, passwordsList.GetRange(0,50), hashedPassword, token, cancellationTokenSource);
         MiHilo hilo2 = new MiHilo("2", finalizar, passwordsList.GetRange(50,50), hashedPassword, token, cancellationTokenSource);
         MiHilo hilo3 = new MiHilo("3", finalizar, passwordsList.GetRange(100,50), hashedPassword, token, cancellationTokenSource);
         MiHilo hilo4 = new MiHilo("4", finalizar, passwordsList.GetRange(150,50), hashedPassword, token, cancellationTokenSource);
-
-
+        
         hilo1.Start();
         hilo2.Start();
         hilo3.Start();
         hilo4.Start();
-
-        
-        
     }
 }
 
