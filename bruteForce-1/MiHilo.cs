@@ -14,7 +14,7 @@ public class MiHilo
     private CancellationToken token;
     private CancellationTokenSource cancellationTokenSource;
 
-    
+
     public MiHilo(
         Stopwatch sw,
         string text,
@@ -23,7 +23,7 @@ public class MiHilo
         string realPasswordHash,
         CancellationToken token,
         CancellationTokenSource cancellationTokenSource
-        )
+    )
     {
         this.sw = sw;
         this.text = text;
@@ -32,7 +32,7 @@ public class MiHilo
         this.realPasswordHash = realPasswordHash;
         this.token = token;
         this.cancellationTokenSource = cancellationTokenSource;
-        finalizar.Value += () => { Console.WriteLine ($"Hilo {text} termina."); };
+        finalizar.Value += () => { Console.WriteLine($"Hilo {text} termina."); };
         hilo = new Thread(_process);
     }
 
@@ -43,20 +43,19 @@ public class MiHilo
 
     void _process()
     {
-        
+
         Console.WriteLine($"Numero de contraseñas to check en el hilo {text}: {passwords.Count}");
-        
+
         foreach (var (pass, index) in passwords.Select((password, idx) => (password, idx)))
         {
 
             if (token.IsCancellationRequested)
             {
-                //finalizar.Value.Invoke();
                 return;
             }
-            
+
             string passwordToCheckHashed = Utils.HashPass(pass);
-        
+
             //Console.WriteLine($"Hilo {text} procesando: {pass} . {index}");
 
             if (passwordToCheckHashed == realPasswordHash)
@@ -69,11 +68,5 @@ public class MiHilo
                 return;
             }
         }
-        
     }
-    
-    
-    
-    
-    
 }

@@ -21,7 +21,7 @@ public class Program
         Stopwatch sw = new Stopwatch();
         sw.Start();
 
-        string path = "../../../passwords.txt";
+        string path = "../../../rockyou.txt";
         var passwordsFile = File.ReadAllLines(path).ToList();
 
         Random rnd = new Random();
@@ -38,9 +38,8 @@ public class Program
         CancellationToken token = cancellationTokenSource.Token;
         
         Wrapper<Action> finalizar = new Wrapper<Action>(() => { });
-
-
-        int numHilos = 6; // Environment.ProcessorCount;
+        
+        int numHilos = 6; //Environment.ProcessorCount ;
         int totalPasswords = passwordsFile.Count;
         int batchSize = totalPasswords / numHilos;
         
