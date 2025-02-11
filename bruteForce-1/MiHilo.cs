@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace bruteForce_1;
 
 
 public class MiHilo
 {
+    private Stopwatch sw;
     Thread hilo;
     private string text;
     private Wrapper<Action> finalizar;
@@ -12,8 +15,17 @@ public class MiHilo
     private CancellationTokenSource cancellationTokenSource;
 
     
-    public MiHilo(string text, Wrapper<Action> finalizar, List<String> passwords, string realPasswordHash, CancellationToken token, CancellationTokenSource cancellationTokenSource)
+    public MiHilo(
+        Stopwatch sw,
+        string text,
+        Wrapper<Action> finalizar,
+        List<String> passwords,
+        string realPasswordHash,
+        CancellationToken token,
+        CancellationTokenSource cancellationTokenSource
+        )
     {
+        this.sw = sw;
         this.text = text;
         this.finalizar = finalizar;
         this.passwords = passwords;
@@ -32,28 +44,29 @@ public class MiHilo
     void _process()
     {
         
-        Console.WriteLine($"Number of passwords to check in thread ${text}: {passwords.Count}");
+        Console.WriteLine($"Numero de contraseñas to check en el hilo {text}: {passwords.Count}");
         
         foreach (var (pass, index) in passwords.Select((password, idx) => (password, idx)))
         {
 
             if (token.IsCancellationRequested)
             {
-                finalizar.Value.Invoke();
+                //finalizar.Value.Invoke();
                 return;
             }
             
             string passwordToCheckHashed = Utils.HashPass(pass);
         
-            Console.WriteLine($"Hilo {text} procesando: {pass} . {index}");
+            //Console.WriteLine($"Hilo {text} procesando: {pass} . {index}");
 
             if (passwordToCheckHashed == realPasswordHash)
             {
                 Console.WriteLine($"Password found: {pass} por el hilo {text} en el indice {index}");
-                //finalizar.Value.Invoke();
+                finalizar.Value.Invoke();
                 cancellationTokenSource.Cancel();
-                
-                break;
+                sw.Stop();
+                Console.WriteLine(sw.Elapsed);
+                return;
             }
         }
         
