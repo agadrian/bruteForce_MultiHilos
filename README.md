@@ -6,7 +6,7 @@ El programa divide la carga de trabajo entre varios hilos, cada uno verificando 
 
 ## Funcionamiento
 - Cargar contraseñas: El programa lee un archivo de contraseñas (passwords.txt) y selecciona aleatoriamente 200 de ellas.
-- División en hilos: En este caso, divido las 200 contraseñas en 4 partes, y cada hilo procesa a partes iguales las contraseñas.
+- División en hilos: Se divide a partes iguales las contraseñas (el último hilo se encarga de manejar si queda alguna suelta para obtennerla él).
 - Hash aleatorio: Se selecciona aleatoriamente una contraseña como objetivo, y se genera un hash SHA256.
 - Procesamiento: Cada hilo calcula el hash de las contraseñas en su rango y lo compara con el hash objetivo.
-- Cancelación: Cuando un hilo encuentra la contraseña correcta, detiene los demás hilos usando un mecanismo de cancelación.
+- Cancelación: Cuando un hilo encuentra la contraseña correcta, detiene los demás hilos usando un mecanismo de cancelación mediante token.
