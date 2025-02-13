@@ -10,3 +10,14 @@ El programa divide la carga de trabajo entre varios hilos, cada uno verificando 
 - Hash aleatorio: Se selecciona aleatoriamente una contraseña como objetivo, y se genera un hash SHA256.
 - Procesamiento: Cada hilo calcula el hash de las contraseñas en su rango y lo compara con el hash objetivo.
 - Cancelación: Cuando un hilo encuentra la contraseña correcta, detiene los demás hilos usando un mecanismo de cancelación mediante token.
+
+# Parte 2 (extras)
+
+## Pool de Hilos
+
+He sustituido la creacion de hilos de forma manual, por un pool de hilos, usando **Parallel.forEach**.
+- Esta clase usa **MaxDegreeOfParallelism** para determinar el número máximo de hilos, en este caso, usando **Environment.ProcessorCount** para ver el número de hilos disponible en el equipo en ese momento.
+- Además, divide de forma eficiente y automática la cantidad de contraseñas que cada Hilo gestionará.
+- Implemento un diccionario para llevar un conteo de cuantas contraseñas a comprobado cada hilo, y se muestra al terminar la ejecución del programa.
+- Cuando se encuentra la contraseña, se usa cancellationTokenSource.Cancel() para evitar nuevas iteracions,  y state.Stop() para cancelar la ejecución actual del resto de hilos.
+
