@@ -23,32 +23,13 @@ He sustituido la creacion de hilos de forma manual, por un pool de hilos, usando
 
 ## Interfaz BruteForce
 
-Para comprobar que efectivamente  ```ThreadPool.SetMaxThreads(70, 70);``` permite que el máximo de hilos sea 70 en este caso, y no ```Environment.ProcessorCount```, por defecto.
-Aún así, TheradPool sigue asignando la cantidad de hilos que considdera necesaria para la tarea solicitada en cada caso.
-En el caso de la fuerza bruta, en mi caso decide usar 12 aunque tenga márgen de usar más.
+He creado una interfaz básica donde el funcionamiento base es el mismo, pero pudiendo ajustar algún parámetro.
+Características:
+- Button para seleccionar el archivo que contiene las contraseñas
+- TextBox para registrar y mostrar logs continuamente
+- Checkbox para la seleccion automatica de hilos, y NumericUpDown para establecer el número de hilos manualmente.
+- Button tanto para iniciar la búsqueda, como para limpiar el log
 
-```
-ThreadPool.SetMaxThreads(70, 70);
+Path al directorio: [Directorio_UI](BruteForceMultiThreading_UI/BruteForceMultiThreading)
+  
 
-ConcurrentDictionary<int, bool> threadIds = new ConcurrentDictionary<int, bool>();
-
-Parallel.For(0, 50, i =>
-{
-    int threadId = Thread.CurrentThread.ManagedThreadId;
-    threadIds.TryAdd(threadId, true);
-    textBox_log.Invoke((Action)(() =>
-        textBox_log.AppendText($"Hilo {threadId} procesando tarea {i}\r\n")));
-    Thread.Sleep(15000); // Simula una tarea larga
-});
-
-// Total de hilos distintos usados
-textBox_log.Invoke((Action)(() =>
-    textBox_log.AppendText($"\r\nTotal de hilos distintos usados: {threadIds.Count}\r\n")));
-```
-
-Comprobar threads disponibles:
-```
-int workerThreads, completionPortThreads;
-ThreadPool.GetAvailableThreads(out workerThreads, out completionPortThreads);
-textBox_log.AppendText($"Hilos disponibles en ThreadPool: {workerThreads}\r\n");
-```
